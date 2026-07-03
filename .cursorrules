@@ -1,0 +1,35 @@
+Project structure:
+- backend/ — Medusa.js v2 Node.js API server
+- storefront/ — Next.js 15 App Router TypeScript storefront
+
+Tech stack:
+- Next.js 15 with App Router, TypeScript, Tailwind CSS v4
+- Medusa.js v2 for e-commerce backend
+- Supabase for PostgreSQL database and file storage
+- Stripe for payments via @medusajs/payment-stripe
+- Resend for transactional emails
+- @medusajs/js-sdk for storefront API calls
+- Framer Motion for animations
+- lucide-react for icons
+
+Coding conventions:
+- All Next.js components use TypeScript with proper typing
+- Server components by default, "use client" only when needed (useState, useEffect, event handlers)
+- Tailwind for all styling — no CSS modules, no styled-components
+- CSS custom properties for theme colors: --bg, --fg, --muted, --border, --card
+- Dark theme: black background (#000000), near-white text (#f0f0f0)
+- Prices are stored in cents in Medusa and must be divided by 100 for display
+- Cart state is managed via CartContext in src/context/CartContext.tsx
+- Medusa SDK client is exported from src/lib/medusa.ts as `sdk`
+- Utility functions live in src/lib/utils.ts
+- No default export for utilities, named exports only
+- All components use named exports (export default function ComponentName)
+- Import alias @/ maps to src/
+- In Next.js 15, dynamic route params are Promise-based (await params)
+
+Design style:
+- Minimal, high-contrast dark aesthetic
+- Typography: tight letter-spacing on headings, tracking-widest on labels and buttons
+- Buttons: outlined, uppercase, letter-spaced — no rounded corners on CTA buttons (use rounded-sm at most)
+- Product images use aspect-[3/4] ratio with object-cover
+- Hover states: subtle scale on product images (scale-[1.04]), color transitions on links/buttons
