@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install *)",
+      "Bash(cd \"/Users/dushyant/Desktop/Freelancing Projects/ecommerce-app/storefront\" && mkdir -p src/components/layout src/components/product src/components/cart src/components/ui src/context src/lib src/types \"src/app/products/[handle]\" src/app/cart src/app/checkout src/app/account)",
+      "Bash(npx next *)",
+      "Bash(npm run *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000)",
+      "Bash(PORT=3000 npx next dev)",
+      "Bash(curl -s http://localhost:3000)",
+      "mcp__Claude_in_Chrome__tabs_context_mcp",
+      "Bash(git init *)"
+    ]
+  }
+}
