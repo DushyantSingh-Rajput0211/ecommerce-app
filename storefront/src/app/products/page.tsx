@@ -1,4 +1,6 @@
 import { sdk } from "@/lib/medusa"
+import { mockProducts } from "@/lib/mockProducts"
+import { withTimeout } from "@/lib/utils"
 import ProductCard from "@/components/product/ProductCard"
 
 export const dynamic = "force-dynamic"
@@ -6,14 +8,19 @@ export const dynamic = "force-dynamic"
 export default async function ProductsPage() {
   let products: any[] = []
   try {
-    const res = await sdk.store.product.list({
-      limit: 100,
-      fields: "id,handle,title,thumbnail,variants.prices",
-    })
+    const res = await withTimeout(
+      sdk.store.product.list({
+        limit: 100,
+        fields: "id,handle,title,thumbnail,variants.prices",
+      })
+    )
     products = res.products
   } catch {
     products = []
   }
+
+  // Fall back to mock products for UI testing when the backend has none.
+  if (products.length === 0) products = mockProducts
 
   return (
     <div className="pt-32 px-6 pb-28">
