@@ -8,7 +8,7 @@ import {
   ReactNode,
 } from "react"
 import { sdk } from "@/lib/medusa"
-import { mockProducts } from "@/lib/mockProducts"
+import { useCatalog } from "@/context/CatalogContext"
 import { withTimeout } from "@/lib/utils"
 
 interface CartContextType {
@@ -25,19 +25,20 @@ const CartContext = createContext<CartContextType | null>(null)
 
 const LOCAL_CART_KEY = "mock_cart"
 
-/** Find a mock product + variant by variant id (used for the local cart). */
-function findMockVariant(variantId: string) {
-  for (const product of mockProducts) {
-    const variant = product.variants?.find((v: any) => v.id === variantId)
-    if (variant) return { product, variant }
-  }
-  return null
-}
-
 export function CartProvider({ children }: { children: ReactNode }) {
+  const { products } = useCatalog()
   const [cart, setCart] = useState<any>(null)
   const [cartId, setCartId] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+
+  /** Find a catalog product + variant by variant id (for the local cart). */
+  function findCatalogVariant(variantId: string) {
+    for (const product of products) {
+      const variant = product.variants?.find((v: any) => v.id === variantId)
+      if (variant) return { product, variant }
+    }
+    return null
+  }
 
   // Restore cart on load: prefer a saved local (mock) cart, else a real one.
   useEffect(() => {
@@ -80,8 +81,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }
 
   async function addToCart(variantId: string, quantity = 1) {
-    // Mock products aren't in the backend — keep a fully local cart for them.
-    const mock = findMockVariant(variantId)
+    // Catalog products are local-first — keep a fully local cart for them.
+    const mock = findCatalogVariant(variantId)
     if (mock) {
       setIsLoading(true)
       try {

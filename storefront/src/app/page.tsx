@@ -1,32 +1,13 @@
 import Link from "next/link"
-import { sdk } from "@/lib/medusa"
-import { mockProducts } from "@/lib/mockProducts"
-import { withTimeout } from "@/lib/utils"
-import ProductCard from "@/components/product/ProductCard"
 import GradientText from "@/components/ui/GradientText"
 import Reveal from "@/components/ui/Reveal"
+import ParentGrid from "@/components/catalog/ParentGrid"
+import FeaturedProducts from "@/components/catalog/FeaturedProducts"
 
-export const dynamic = "force-dynamic"
-
-export default async function HomePage() {
-  let products: any[] = []
-  try {
-    const res = await withTimeout(
-      sdk.store.product.list({
-        limit: 4,
-        fields: "id,handle,title,thumbnail,variants.prices",
-      })
-    )
-    products = res.products
-  } catch {
-    products = []
-  }
-
-  // Fall back to mock products for UI testing when the backend has none.
-  if (products.length === 0) products = mockProducts.slice(0, 4)
-
+export default function HomePage() {
   return (
     <div className="pt-16">
+      {/* Hero */}
       <section className="min-h-[88vh] flex flex-col justify-end pb-14 px-6">
         <div className="max-w-7xl mx-auto w-full">
           <Reveal>
@@ -66,32 +47,11 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {products.length > 0 && (
-        <section className="px-6 pb-28">
-          <div className="max-w-7xl mx-auto">
-            <Reveal>
-              <div className="flex items-end justify-between mb-8">
-                <p className="text-[10px] tracking-[0.35em] uppercase text-muted">
-                  Featured
-                </p>
-                <Link
-                  href="/products"
-                  className="text-[10px] tracking-[0.2em] uppercase text-muted hover:text-accent transition-colors"
-                >
-                  View all →
-                </Link>
-              </div>
-            </Reveal>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 gap-y-8">
-              {products.map((p: any, i: number) => (
-                <Reveal key={p.id} delay={i * 0.06}>
-                  <ProductCard product={p} />
-                </Reveal>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
+      {/* 4 parent categories */}
+      <ParentGrid />
+
+      {/* Featured products */}
+      <FeaturedProducts limit={4} />
     </div>
   )
 }
