@@ -4,10 +4,16 @@ import type {
   CatalogProduct,
 } from "@/types/catalog"
 
-export const CATALOG_STORAGE_KEY = "catalog_v1"
+// Bumped to v2 so cached catalogs re-seed with 1920x2560 product images.
+export const CATALOG_STORAGE_KEY = "catalog_v2"
 
+/** Product-card image dimensions (3:4 portrait). */
+export const PRODUCT_IMAGE_WIDTH = 1920
+export const PRODUCT_IMAGE_HEIGHT = 2560
+
+// Seed images request the exact 1920x2560 (3:4) crop from Unsplash.
 const img = (id: string) =>
-  `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=900&q=80`
+  `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${PRODUCT_IMAGE_WIDTH}&h=${PRODUCT_IMAGE_HEIGHT}&q=80`
 
 const price = (amount: number) => [{ amount, currency_code: "usd" }]
 
@@ -64,6 +70,43 @@ export async function fileToCompressedDataUrl(
       const ctx = canvas.getContext("2d")
       if (!ctx) return resolve(dataUrl)
       ctx.drawImage(image, 0, 0, w, h)
+      resolve(canvas.toDataURL("image/jpeg", quality))
+    }
+    image.onerror = () => resolve(dataUrl)
+    image.src = dataUrl
+  })
+}
+
+/**
+ * Cover-crop an uploaded image to exact `targetW`x`targetH` (JPEG data URL),
+ * so every product-card image is a uniform 1920x2560 (3:4). Scales to fill
+ * then centers the crop — same visual result as CSS object-cover, baked in.
+ */
+export async function fileToCoverCropDataUrl(
+  file: File,
+  targetW = PRODUCT_IMAGE_WIDTH,
+  targetH = PRODUCT_IMAGE_HEIGHT,
+  quality = 0.85
+): Promise<string> {
+  const dataUrl = await fileToDataUrl(file)
+  if (typeof document === "undefined") return dataUrl
+
+  return new Promise((resolve) => {
+    const image = new window.Image()
+    image.onload = () => {
+      const canvas = document.createElement("canvas")
+      canvas.width = targetW
+      canvas.height = targetH
+      const ctx = canvas.getContext("2d")
+      if (!ctx) return resolve(dataUrl)
+
+      // Scale to cover, then center.
+      const scale = Math.max(targetW / image.width, targetH / image.height)
+      const drawW = image.width * scale
+      const drawH = image.height * scale
+      const dx = (targetW - drawW) / 2
+      const dy = (targetH - drawH) / 2
+      ctx.drawImage(image, dx, dy, drawW, drawH)
       resolve(canvas.toDataURL("image/jpeg", quality))
     }
     image.onerror = () => resolve(dataUrl)

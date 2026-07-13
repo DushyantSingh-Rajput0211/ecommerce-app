@@ -3,23 +3,31 @@
 import Image from "next/image"
 import { useRef, useState } from "react"
 import { ImagePlus, X, Loader2 } from "lucide-react"
-import { fileToCompressedDataUrl } from "@/lib/catalog"
+import {
+  fileToCompressedDataUrl,
+  fileToCoverCropDataUrl,
+} from "@/lib/catalog"
 
 /**
  * File-picker + live preview grid. Uploaded images are compressed to JPEG
  * data URLs so they fit comfortably in localStorage. Supports single or
  * multiple images; first image acts as the thumbnail.
+ *
+ * Pass `crop={{ w, h }}` to cover-crop every upload to exact dimensions
+ * (used for product cards → uniform 1920x2560).
  */
 export default function ImageUploader({
   value,
   onChange,
   multiple = true,
   max = 6,
+  crop,
 }: {
   value: string[]
   onChange: (urls: string[]) => void
   multiple?: boolean
   max?: number
+  crop?: { w: number; h: number }
 }) {
   const inputRef = useRef<HTMLInputElement>(null)
   const [busy, setBusy] = useState(false)
@@ -30,7 +38,11 @@ export default function ImageUploader({
     try {
       const incoming = Array.from(files).slice(0, max - value.length)
       const urls = await Promise.all(
-        incoming.map((f) => fileToCompressedDataUrl(f))
+        incoming.map((f) =>
+          crop
+            ? fileToCoverCropDataUrl(f, crop.w, crop.h)
+            : fileToCompressedDataUrl(f)
+        )
       )
       onChange(multiple ? [...value, ...urls].slice(0, max) : urls.slice(0, 1))
     } finally {
@@ -100,6 +112,9 @@ export default function ImageUploader({
         {multiple
           ? `Up to ${max} images. The first is the cover/thumbnail.`
           : "One image."}{" "}
+        {crop
+          ? `Cropped to ${crop.w}×${crop.h}. `
+          : ""}
         Stored locally (compressed).
       </p>
     </div>

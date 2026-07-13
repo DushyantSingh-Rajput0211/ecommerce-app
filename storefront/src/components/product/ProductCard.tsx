@@ -8,7 +8,7 @@ export default function ProductCard({ product }: { product: any }) {
 
   return (
     <Link href={`/products/${product.handle}`} className="group block">
-      <div className="aspect-[3/4] relative overflow-hidden bg-card mb-3 rounded-lg border border-border glow-hover">
+      <div className="aspect-3/4 relative overflow-hidden bg-card mb-3 rounded-lg border border-border glow-hover">
         {product.thumbnail ? (
           <Image
             src={product.thumbnail}
