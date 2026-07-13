@@ -6,7 +6,13 @@ import Image from "next/image"
 import { Plus, Trash2 } from "lucide-react"
 import { useCatalog } from "@/context/CatalogContext"
 import type { CatalogProduct } from "@/types/catalog"
-import { makeId, slugify, uniqueHandle } from "@/lib/catalog"
+import {
+  makeId,
+  slugify,
+  uniqueHandle,
+  PRODUCT_IMAGE_WIDTH,
+  PRODUCT_IMAGE_HEIGHT,
+} from "@/lib/catalog"
 import { formatPrice } from "@/lib/utils"
 import ImageUploader from "./ImageUploader"
 import Button from "@/components/ui/Button"
@@ -148,7 +154,13 @@ export default function ProductForm({ initial }: { initial?: CatalogProduct }) {
 
         <div>
           <label className={labelCls}>Images</label>
-          <ImageUploader value={images} onChange={setImages} multiple max={6} />
+          <ImageUploader
+            value={images}
+            onChange={setImages}
+            multiple
+            max={6}
+            crop={{ w: PRODUCT_IMAGE_WIDTH, h: PRODUCT_IMAGE_HEIGHT }}
+          />
         </div>
 
         <div>
@@ -222,7 +234,7 @@ export default function ProductForm({ initial }: { initial?: CatalogProduct }) {
           Live preview
         </p>
         <div className="glass rounded-xl p-4">
-          <div className="aspect-[3/4] relative overflow-hidden bg-card rounded-lg border border-border mb-3">
+          <div className="aspect-3/4 relative overflow-hidden bg-card rounded-lg border border-border mb-3">
             {images[0] ? (
               <Image src={images[0]} alt="" fill className="object-cover" />
             ) : (
