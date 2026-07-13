@@ -9,6 +9,7 @@ export default function Footer() {
           <Link href="/products" className="hover:text-fg transition-colors">Shop</Link>
           <Link href="#" className="hover:text-fg transition-colors">Returns</Link>
           <Link href="#" className="hover:text-fg transition-colors">Contact</Link>
+          <Link href="/admin" className="hover:text-accent transition-colors">Admin</Link>
         </div>
       </div>
     </footer>

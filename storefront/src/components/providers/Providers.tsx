@@ -2,6 +2,8 @@
 
 import { ReactNode } from "react"
 import { CartProvider } from "@/context/CartContext"
+import { CatalogProvider } from "@/context/CatalogContext"
+import { AdminProvider } from "@/context/AdminContext"
 
 /**
  * Composes all client-side context providers. New providers (Toast, Wishlist,
@@ -9,5 +11,11 @@ import { CartProvider } from "@/context/CartContext"
  * keeping layout.tsx clean.
  */
 export default function Providers({ children }: { children: ReactNode }) {
-  return <CartProvider>{children}</CartProvider>
+  return (
+    <AdminProvider>
+      <CatalogProvider>
+        <CartProvider>{children}</CartProvider>
+      </CatalogProvider>
+    </AdminProvider>
+  )
 }
