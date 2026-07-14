@@ -1,12 +1,13 @@
 "use client"
 
 import Link from "next/link"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { AnimatePresence, motion } from "framer-motion"
 import { ShoppingBag, Menu, X } from "lucide-react"
 import { useCart } from "@/context/CartContext"
 import { useUI } from "@/context/UIContext"
 import { useCatalog } from "@/context/CatalogContext"
+import { useScrollLock } from "@/lib/useScrollLock"
 
 const NAV = [
   { href: "/", label: "Home" },
@@ -19,12 +20,7 @@ export default function Header() {
   const { parents } = useCatalog()
   const [menuOpen, setMenuOpen] = useState(false)
 
-  useEffect(() => {
-    document.body.style.overflow = menuOpen ? "hidden" : ""
-    return () => {
-      document.body.style.overflow = ""
-    }
-  }, [menuOpen])
+  useScrollLock(menuOpen)
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 h-16 border-b border-border glass">
