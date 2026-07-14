@@ -7,22 +7,21 @@ import { AnimatePresence, motion } from "framer-motion"
 import { X, ShoppingBag, Minus, Plus } from "lucide-react"
 import { useCart } from "@/context/CartContext"
 import { useUI } from "@/context/UIContext"
+import { useScrollLock } from "@/lib/useScrollLock"
 import { formatPrice } from "@/lib/utils"
 
 export default function CartDrawer() {
   const { cart, itemCount, removeFromCart, updateQuantity } = useCart()
   const { cartOpen, closeCart } = useUI()
 
-  // Lock body scroll while open; close on Escape.
+  useScrollLock(cartOpen)
+
+  // Close on Escape while open.
   useEffect(() => {
     if (!cartOpen) return
-    document.body.style.overflow = "hidden"
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && closeCart()
     window.addEventListener("keydown", onKey)
-    return () => {
-      document.body.style.overflow = ""
-      window.removeEventListener("keydown", onKey)
-    }
+    return () => window.removeEventListener("keydown", onKey)
   }, [cartOpen, closeCart])
 
   const items = cart?.items ?? []
