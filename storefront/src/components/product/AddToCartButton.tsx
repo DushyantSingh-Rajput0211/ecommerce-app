@@ -2,10 +2,14 @@
 
 import { useState } from "react"
 import { useCart } from "@/context/CartContext"
+import { useUI } from "@/context/UIContext"
+import { useToast } from "@/context/ToastContext"
 import { formatPrice } from "@/lib/utils"
 
 export default function AddToCartButton({ product }: { product: any }) {
   const { addToCart, isLoading } = useCart()
+  const { openCart } = useUI()
+  const { toast } = useToast()
   const variants = product.variants ?? []
   const [selectedId, setSelectedId] = useState<string>(variants[0]?.id ?? "")
   const [quantity, setQuantity] = useState(1)
@@ -18,6 +22,8 @@ export default function AddToCartButton({ product }: { product: any }) {
     if (!selectedId) return
     await addToCart(selectedId, quantity)
     setJustAdded(true)
+    toast(`Added to cart · ${product.title}`)
+    openCart()
     setTimeout(() => setJustAdded(false), 2000)
   }
 
