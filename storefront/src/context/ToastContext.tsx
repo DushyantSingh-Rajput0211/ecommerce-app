@@ -6,6 +6,7 @@ import {
   useState,
   useCallback,
   useRef,
+  useEffect,
   ReactNode,
 } from "react"
 
@@ -28,19 +29,34 @@ const ToastContext = createContext<ToastContextType | null>(null)
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([])
   const nextId = useRef(1)
+  const timers = useRef<Map<number, ReturnType<typeof setTimeout>>>(new Map())
 
   const dismiss = useCallback((id: number) => {
     setToasts((ts) => ts.filter((t) => t.id !== id))
+    const timer = timers.current.get(id)
+    if (timer) {
+      clearTimeout(timer)
+      timers.current.delete(id)
+    }
   }, [])
 
   const toast = useCallback(
     (message: string, type: ToastType = "success") => {
       const id = nextId.current++
       setToasts((ts) => [...ts, { id, message, type }])
-      setTimeout(() => dismiss(id), 3000)
+      timers.current.set(id, setTimeout(() => dismiss(id), 3000))
     },
     [dismiss]
   )
+
+  // Clear any pending timers on unmount to avoid leaks / post-unmount updates.
+  useEffect(() => {
+    const map = timers.current
+    return () => {
+      map.forEach((t) => clearTimeout(t))
+      map.clear()
+    }
+  }, [])
 
   return (
     <ToastContext.Provider value={{ toasts, toast, dismiss }}>
