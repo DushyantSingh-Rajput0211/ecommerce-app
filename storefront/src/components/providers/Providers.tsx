@@ -7,6 +7,7 @@ import { AdminProvider } from "@/context/AdminContext"
 import { ToastProvider } from "@/context/ToastContext"
 import { UIProvider } from "@/context/UIContext"
 import { ReviewsProvider } from "@/context/ReviewsContext"
+import { OrdersProvider } from "@/context/OrdersContext"
 import Toaster from "@/components/ui/Toaster"
 import CartDrawer from "@/components/cart/CartDrawer"
 import SearchOverlay from "@/components/search/SearchOverlay"
@@ -20,16 +21,18 @@ export default function Providers({ children }: { children: ReactNode }) {
     <AdminProvider>
       <CatalogProvider>
         <ReviewsProvider>
-          <ToastProvider>
-            <UIProvider>
-              <CartProvider>
-                {children}
-                <Toaster />
-                <CartDrawer />
-                <SearchOverlay />
-              </CartProvider>
-            </UIProvider>
-          </ToastProvider>
+          <OrdersProvider>
+            <ToastProvider>
+              <UIProvider>
+                <CartProvider>
+                  {children}
+                  <Toaster />
+                  <CartDrawer />
+                  <SearchOverlay />
+                </CartProvider>
+              </UIProvider>
+            </ToastProvider>
+          </OrdersProvider>
         </ReviewsProvider>
       </CatalogProvider>
     </AdminProvider>
