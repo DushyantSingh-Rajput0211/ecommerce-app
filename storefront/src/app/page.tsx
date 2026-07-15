@@ -3,6 +3,7 @@ import GradientText from "@/components/ui/GradientText"
 import Reveal from "@/components/ui/Reveal"
 import ParentGrid from "@/components/catalog/ParentGrid"
 import FeaturedProducts from "@/components/catalog/FeaturedProducts"
+import RecentlyViewed from "@/components/product/RecentlyViewed"
 
 export default function HomePage() {
   return (
@@ -52,6 +53,14 @@ export default function HomePage() {
 
       {/* Featured products */}
       <FeaturedProducts limit={4} />
+
+      {/* Recently viewed */}
+      <div className="px-6">
+        <div className="max-w-7xl mx-auto">
+          <RecentlyViewed title="Recently viewed" />
+        </div>
+      </div>
+      <div className="pb-16" />
     </div>
   )
 }
