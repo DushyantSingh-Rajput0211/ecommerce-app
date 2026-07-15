@@ -4,8 +4,8 @@ import type {
   CatalogProduct,
 } from "@/types/catalog"
 
-// Bumped to v2 so cached catalogs re-seed with 1920x2560 product images.
-export const CATALOG_STORAGE_KEY = "catalog_v2"
+// Bumped to v3 so cached catalogs re-seed with variant inventory quantities.
+export const CATALOG_STORAGE_KEY = "catalog_v3"
 
 /** Product-card image dimensions (3:4 portrait). */
 export const PRODUCT_IMAGE_WIDTH = 1920
@@ -16,6 +16,13 @@ const img = (id: string) =>
   `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${PRODUCT_IMAGE_WIDTH}&h=${PRODUCT_IMAGE_HEIGHT}&q=80`
 
 const price = (amount: number) => [{ amount, currency_code: "usd" }]
+
+const variant = (
+  id: string,
+  title: string,
+  amount: number,
+  inventory_quantity: number
+) => ({ id, title, prices: price(amount), inventory_quantity })
 
 /** URL-safe slug from a title (used for parent/product handles). */
 export function slugify(input: string): string {
@@ -174,8 +181,8 @@ export function defaultCatalog(): Catalog {
         { id: "s2", url: img("1484704849700-f032a568e944") },
       ],
       variants: [
-        { id: "sony_black", title: "Black", prices: price(34800) },
-        { id: "sony_silver", title: "Silver", prices: price(34800) },
+        variant("sony_black", "Black", 34800, 14),
+        variant("sony_silver", "Silver", 34800, 0),
       ],
       createdAt: now,
     },
@@ -193,8 +200,8 @@ export function defaultCatalog(): Catalog {
         { id: "w2", url: img("1546868871-7041f2a55e12") },
       ],
       variants: [
-        { id: "watch_mid", title: "Midnight", prices: price(39900) },
-        { id: "watch_star", title: "Starlight", prices: price(39900) },
+        variant("watch_mid", "Midnight", 39900, 30),
+        variant("watch_star", "Starlight", 39900, 8),
       ],
       createdAt: now,
     },
@@ -212,10 +219,10 @@ export function defaultCatalog(): Catalog {
         { id: "n2", url: img("1600185365483-26d7a4cc7519") },
       ],
       variants: [
-        { id: "nike_8", title: "US 8", prices: price(12995) },
-        { id: "nike_9", title: "US 9", prices: price(12995) },
-        { id: "nike_10", title: "US 10", prices: price(12995) },
-        { id: "nike_11", title: "US 11", prices: price(12995) },
+        variant("nike_8", "US 8", 12995, 3),
+        variant("nike_9", "US 9", 12995, 12),
+        variant("nike_10", "US 10", 12995, 0),
+        variant("nike_11", "US 11", 12995, 6),
       ],
       createdAt: now,
     },
@@ -230,8 +237,8 @@ export function defaultCatalog(): Catalog {
       collection: { title: "Accessories" },
       images: [{ id: "k1", url: img("1553062407-98eeb64c6a62") }],
       variants: [
-        { id: "kanken_graphite", title: "Graphite", prices: price(8000) },
-        { id: "kanken_ochre", title: "Ochre", prices: price(8000) },
+        variant("kanken_graphite", "Graphite", 8000, 20),
+        variant("kanken_ochre", "Ochre", 8000, 5),
       ],
       createdAt: now,
     },
@@ -246,7 +253,7 @@ export function defaultCatalog(): Catalog {
       collection: { title: "Accessories" },
       images: [{ id: "r1", url: img("1511499767150-a48a237f0083") }],
       variants: [
-        { id: "rayban_black", title: "Black / Green", prices: price(16100) },
+        variant("rayban_black", "Black / Green", 16100, 40),
       ],
       createdAt: now,
     },
@@ -261,7 +268,7 @@ export function defaultCatalog(): Catalog {
       collection: { title: "Accessories" },
       images: [{ id: "l1", url: img("1541140532154-b024d705b90a") }],
       variants: [
-        { id: "logi_graphite", title: "Graphite", prices: price(11999) },
+        variant("logi_graphite", "Graphite", 11999, 2),
       ],
       createdAt: now,
     },

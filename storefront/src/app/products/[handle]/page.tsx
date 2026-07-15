@@ -3,16 +3,21 @@
 import Link from "next/link"
 import { useParams } from "next/navigation"
 import { useCatalog } from "@/context/CatalogContext"
+import { useReviews } from "@/context/ReviewsContext"
 import { formatPrice } from "@/lib/utils"
 import AddToCartButton from "@/components/product/AddToCartButton"
 import ImageGallery from "@/components/product/ImageGallery"
+import RelatedProducts from "@/components/product/RelatedProducts"
+import Reviews from "@/components/product/Reviews"
 import Spinner from "@/components/ui/Spinner"
 import Breadcrumbs from "@/components/ui/Breadcrumbs"
+import { Stars } from "@/components/ui/Stars"
 
 export default function ProductPage() {
   const params = useParams()
   const handle = String(params.handle)
-  const { getProductByHandle, getParentByHandle, parents, ready } = useCatalog()
+  const { getProductByHandle, parents, ready } = useCatalog()
+  const { getSummary } = useReviews()
 
   const product = getProductByHandle(handle)
 
@@ -43,10 +48,11 @@ export default function ProductPage() {
   const parent = parents.find((p) => p.id === product.parentId)
   const images = product.images ?? []
   const firstVariantPrice = product.variants?.[0]?.prices?.[0]
+  const summary = getSummary(handle)
 
   return (
     <div className="pt-16 min-h-screen">
-      <div className="max-w-7xl mx-auto px-6 py-16">
+      <div className="max-w-7xl mx-auto px-6 py-16 pb-28 md:pb-16">
         <div className="mb-8">
           <Breadcrumbs
             items={[
@@ -69,6 +75,20 @@ export default function ProductPage() {
             <h1 className="font-display text-3xl font-semibold mb-3">
               {product.title}
             </h1>
+
+            {summary.count > 0 && (
+              <a
+                href="#reviews"
+                className="flex items-center gap-2 mb-4 w-fit group"
+              >
+                <Stars rating={summary.average} size={15} />
+                <span className="text-xs text-muted group-hover:text-fg transition-colors">
+                  {summary.average.toFixed(1)} · {summary.count} review
+                  {summary.count === 1 ? "" : "s"}
+                </span>
+              </a>
+            )}
+
             <p className="text-xl mb-8">
               {firstVariantPrice
                 ? formatPrice(firstVariantPrice.amount)
@@ -83,6 +103,14 @@ export default function ProductPage() {
 
             <AddToCartButton product={product} />
           </div>
+        </div>
+
+        {parent && (
+          <RelatedProducts parentId={parent.id} excludeId={product.id} />
+        )}
+
+        <div id="reviews" className="scroll-mt-24">
+          <Reviews handle={handle} />
         </div>
       </div>
     </div>
