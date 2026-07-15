@@ -6,6 +6,7 @@ import { useCatalog } from "@/context/CatalogContext"
 import ProductCard from "@/components/product/ProductCard"
 import Reveal from "@/components/ui/Reveal"
 import Spinner from "@/components/ui/Spinner"
+import Breadcrumbs from "@/components/ui/Breadcrumbs"
 
 export default function CategoryPage() {
   const params = useParams()
@@ -43,15 +44,15 @@ export default function CategoryPage() {
   return (
     <div className="pt-32 px-6 pb-28 min-h-screen">
       <div className="max-w-7xl mx-auto">
-        <nav className="text-[11px] tracking-widest uppercase text-muted mb-6">
-          <Link href="/" className="hover:text-fg transition-colors">
-            Home
-          </Link>
-          <span className="mx-2">/</span>
-          <span className="text-fg">{parent.title}</span>
-        </nav>
+        <Breadcrumbs
+          items={[
+            { label: "Home", href: "/" },
+            { label: "Collections", href: "/collections" },
+            { label: parent.title },
+          ]}
+        />
 
-        <div className="mb-12 max-w-2xl">
+        <div className="mt-6 mb-12 max-w-2xl">
           <h1 className="font-display text-4xl font-semibold mb-3">
             {parent.title}
           </h1>

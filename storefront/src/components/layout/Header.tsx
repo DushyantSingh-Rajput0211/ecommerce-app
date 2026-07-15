@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { useState } from "react"
 import { AnimatePresence, motion } from "framer-motion"
-import { ShoppingBag, Menu, X } from "lucide-react"
+import { ShoppingBag, Menu, X, Search } from "lucide-react"
 import { useCart } from "@/context/CartContext"
 import { useUI } from "@/context/UIContext"
 import { useCatalog } from "@/context/CatalogContext"
@@ -12,11 +12,12 @@ import { useScrollLock } from "@/lib/useScrollLock"
 const NAV = [
   { href: "/", label: "Home" },
   { href: "/products", label: "Shop" },
+  { href: "/collections", label: "Collections" },
 ]
 
 export default function Header() {
   const { itemCount } = useCart()
-  const { openCart } = useUI()
+  const { openCart, openSearch } = useUI()
   const { parents } = useCatalog()
   const [menuOpen, setMenuOpen] = useState(false)
 
@@ -55,7 +56,15 @@ export default function Header() {
           ))}
         </nav>
 
-        {/* Right: cart */}
+        {/* Right: search + cart */}
+        <div className="flex items-center gap-1">
+        <button
+          onClick={openSearch}
+          aria-label="Search"
+          className="w-9 h-9 flex items-center justify-center hover:text-accent transition-colors"
+        >
+          <Search size={18} />
+        </button>
         <button
           onClick={openCart}
           aria-label="Open cart"
@@ -77,6 +86,7 @@ export default function Header() {
             )}
           </AnimatePresence>
         </button>
+        </div>
       </div>
 
       {/* Mobile menu overlay */}

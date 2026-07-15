@@ -8,6 +8,7 @@ import { ToastProvider } from "@/context/ToastContext"
 import { UIProvider } from "@/context/UIContext"
 import Toaster from "@/components/ui/Toaster"
 import CartDrawer from "@/components/cart/CartDrawer"
+import SearchOverlay from "@/components/search/SearchOverlay"
 
 /**
  * Composes all client-side context providers and renders global overlays
@@ -23,6 +24,7 @@ export default function Providers({ children }: { children: ReactNode }) {
               {children}
               <Toaster />
               <CartDrawer />
+              <SearchOverlay />
             </CartProvider>
           </UIProvider>
         </ToastProvider>
