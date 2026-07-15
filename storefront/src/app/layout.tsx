@@ -52,7 +52,9 @@ export default function RootLayout({
       lang="en"
       className={`${inter.variable} ${spaceGrotesk.variable}`}
     >
-      <body className="bg-bg text-fg min-h-screen">
+      {/* suppressHydrationWarning: browser extensions (e.g. ColorZilla) inject
+          attributes like cz-shortcut-listen onto <body> before hydration. */}
+      <body className="bg-bg text-fg min-h-screen" suppressHydrationWarning>
         <a href="#main" className="skip-link">
           Skip to content
         </a>
