@@ -4,6 +4,12 @@ import Link from "next/link"
 import Image from "next/image"
 import { useCart } from "@/context/CartContext"
 import { formatPrice } from "@/lib/utils"
+import {
+  FREE_SHIPPING_THRESHOLD,
+  amountToFreeShipping,
+  shippingCost,
+} from "@/lib/checkout"
+import TrustBadges from "@/components/ui/TrustBadges"
 
 export default function CartPage() {
   const { cart, removeFromCart, updateQuantity, itemCount } = useCart()
@@ -92,22 +98,64 @@ export default function CartPage() {
           ))}
         </div>
 
+        {/* Free-shipping progress */}
+        {(() => {
+          const remaining = amountToFreeShipping(subtotal)
+          const pct = Math.min(100, (subtotal / FREE_SHIPPING_THRESHOLD) * 100)
+          return (
+            <div className="mb-8">
+              <p className="text-xs text-muted mb-2">
+                {remaining > 0 ? (
+                  <>
+                    Add{" "}
+                    <span className="text-fg">{formatPrice(remaining)}</span> for
+                    free standard shipping
+                  </>
+                ) : (
+                  <span className="text-emerald-400">
+                    You&apos;ve unlocked free standard shipping ✓
+                  </span>
+                )}
+              </p>
+              <div className="h-1.5 rounded-full bg-card overflow-hidden">
+                <div
+                  className="h-full bg-[image:var(--grad-primary)] transition-[width] duration-500"
+                  style={{ width: `${pct}%` }}
+                />
+              </div>
+            </div>
+          )
+        })()}
+
         <div className="border-t border-border pt-8">
           <div className="flex justify-between text-sm mb-2">
             <span className="text-muted">Subtotal</span>
             <span>{formatPrice(subtotal)}</span>
           </div>
-          <div className="flex justify-between text-xs text-muted mb-10">
-            <span>Shipping</span>
-            <span>Calculated at checkout</span>
+          <div className="flex justify-between text-sm mb-2">
+            <span className="text-muted">Est. shipping (standard)</span>
+            <span>
+              {shippingCost("standard", subtotal) === 0
+                ? "Free"
+                : formatPrice(shippingCost("standard", subtotal))}
+            </span>
+          </div>
+          <div className="flex justify-between text-base pt-3 mt-1 border-t border-border mb-8">
+            <span>Estimated total</span>
+            <span className="font-medium">
+              {formatPrice(subtotal + shippingCost("standard", subtotal))}
+            </span>
           </div>
           <Link
             href="/checkout"
             className="block w-full text-center py-4 text-xs tracking-[0.25em] uppercase
-              bg-fg text-bg hover:opacity-90 transition-opacity"
+              bg-[image:var(--grad-primary)] bg-[length:200%_200%] text-white rounded-sm
+              hover:bg-[position:100%_50%] transition-all
+              shadow-[0_8px_30px_-8px_rgba(124,58,237,0.6)]"
           >
             Proceed to checkout
           </Link>
+          <TrustBadges className="justify-center mt-8" />
         </div>
       </div>
     </div>

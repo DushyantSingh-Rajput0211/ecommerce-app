@@ -17,6 +17,7 @@ interface CartContextType {
   addToCart: (variantId: string, quantity?: number) => Promise<void>
   removeFromCart: (lineItemId: string) => Promise<void>
   updateQuantity: (lineItemId: string, quantity: number) => Promise<void>
+  clearCart: () => void
   itemCount: number
   isLoading: boolean
 }
@@ -172,6 +173,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setCart(updated)
   }
 
+  function clearCart() {
+    setCart(null)
+    setCartId(null)
+    localStorage.removeItem(LOCAL_CART_KEY)
+    localStorage.removeItem("cart_id")
+  }
+
   const itemCount =
     cart?.items?.reduce(
       (sum: number, item: any) => sum + item.quantity,
@@ -186,6 +194,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         addToCart,
         removeFromCart,
         updateQuantity,
+        clearCart,
         itemCount,
         isLoading,
       }}
