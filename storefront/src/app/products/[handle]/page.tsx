@@ -30,6 +30,10 @@ export default function ProductPage() {
     if (product) record(handle)
   }, [product, handle, record])
 
+  useEffect(() => {
+    if (product) document.title = `${product.title} · My Store`
+  }, [product])
+
   // Before localStorage hydration an admin-created product may be unresolved,
   // so only treat it as missing once the catalog is ready.
   if (!product && !ready) {
@@ -59,8 +63,37 @@ export default function ProductPage() {
   const firstVariantPrice = product.variants?.[0]?.prices?.[0]
   const summary = getSummary(handle)
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.title,
+    description: product.description || undefined,
+    image: images.map((i: any) => i.url),
+    category: parent?.title,
+    offers: firstVariantPrice
+      ? {
+          "@type": "Offer",
+          price: (firstVariantPrice.amount / 100).toFixed(2),
+          priceCurrency: (firstVariantPrice.currency_code || "usd").toUpperCase(),
+          availability: "https://schema.org/InStock",
+        }
+      : undefined,
+    aggregateRating:
+      summary.count > 0
+        ? {
+            "@type": "AggregateRating",
+            ratingValue: summary.average.toFixed(1),
+            reviewCount: summary.count,
+          }
+        : undefined,
+  }
+
   return (
     <div className="pt-16 min-h-screen">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div className="max-w-7xl mx-auto px-6 py-16 pb-28 md:pb-16">
         <div className="mb-8">
           <Breadcrumbs
