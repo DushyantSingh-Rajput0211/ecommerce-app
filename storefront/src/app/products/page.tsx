@@ -1,36 +1,29 @@
-"use client"
+import { Suspense } from "react"
+import ProductsBrowser from "@/components/product/ProductsBrowser"
+import ProductCardSkeleton from "@/components/product/ProductCardSkeleton"
 
-import { useCatalog } from "@/context/CatalogContext"
-import ProductCard from "@/components/product/ProductCard"
-import Reveal from "@/components/ui/Reveal"
-
-export default function ProductsPage() {
-  const { products } = useCatalog()
-
+function ProductsFallback() {
   return (
     <div className="pt-32 px-6 pb-28 min-h-screen">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-14">
-          <h1 className="font-display text-4xl font-semibold">All Products</h1>
-          <p className="text-xs text-muted mt-2 tracking-widest">
-            {products.length} items
-          </p>
+        <div className="mb-10">
+          <div className="h-9 w-56 rounded skeleton" />
+          <div className="h-3 w-24 rounded skeleton mt-3" />
         </div>
-
-        {products.length === 0 ? (
-          <p className="text-muted text-sm text-center py-32">
-            No products yet. Add them in the admin dashboard.
-          </p>
-        ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-12">
-            {products.map((p, i) => (
-              <Reveal key={p.id} delay={i * 0.04}>
-                <ProductCard product={p} />
-              </Reveal>
-            ))}
-          </div>
-        )}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-12">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <ProductCardSkeleton key={i} />
+          ))}
+        </div>
       </div>
     </div>
+  )
+}
+
+export default function ProductsPage() {
+  return (
+    <Suspense fallback={<ProductsFallback />}>
+      <ProductsBrowser />
+    </Suspense>
   )
 }

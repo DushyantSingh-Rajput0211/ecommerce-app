@@ -7,6 +7,7 @@ import { formatPrice } from "@/lib/utils"
 import AddToCartButton from "@/components/product/AddToCartButton"
 import ImageGallery from "@/components/product/ImageGallery"
 import Spinner from "@/components/ui/Spinner"
+import Breadcrumbs from "@/components/ui/Breadcrumbs"
 
 export default function ProductPage() {
   const params = useParams()
@@ -46,24 +47,17 @@ export default function ProductPage() {
   return (
     <div className="pt-16 min-h-screen">
       <div className="max-w-7xl mx-auto px-6 py-16">
-        <nav className="text-[11px] tracking-widest uppercase text-muted mb-8">
-          <Link href="/" className="hover:text-fg transition-colors">
-            Home
-          </Link>
-          <span className="mx-2">/</span>
-          {parent && (
-            <>
-              <Link
-                href={`/category/${parent.handle}`}
-                className="hover:text-fg transition-colors"
-              >
-                {parent.title}
-              </Link>
-              <span className="mx-2">/</span>
-            </>
-          )}
-          <span className="text-fg">{product.title}</span>
-        </nav>
+        <div className="mb-8">
+          <Breadcrumbs
+            items={[
+              { label: "Home", href: "/" },
+              ...(parent
+                ? [{ label: parent.title, href: `/category/${parent.handle}` }]
+                : []),
+              { label: product.title },
+            ]}
+          />
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-24">
           <ImageGallery images={images} title={product.title} />
