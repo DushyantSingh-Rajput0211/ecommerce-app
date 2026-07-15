@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { useState } from "react"
 import { AnimatePresence, motion } from "framer-motion"
-import { ShoppingBag, Menu, X, Search } from "lucide-react"
+import { ShoppingBag, Menu, X, Search, User } from "lucide-react"
 import { useCart } from "@/context/CartContext"
 import { useUI } from "@/context/UIContext"
 import { useCatalog } from "@/context/CatalogContext"
@@ -65,6 +65,13 @@ export default function Header() {
         >
           <Search size={18} />
         </button>
+        <Link
+          href="/account"
+          aria-label="Account"
+          className="w-9 h-9 flex items-center justify-center hover:text-accent transition-colors"
+        >
+          <User size={18} />
+        </Link>
         <button
           onClick={openCart}
           aria-label="Open cart"

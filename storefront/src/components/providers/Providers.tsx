@@ -8,6 +8,9 @@ import { ToastProvider } from "@/context/ToastContext"
 import { UIProvider } from "@/context/UIContext"
 import { ReviewsProvider } from "@/context/ReviewsContext"
 import { OrdersProvider } from "@/context/OrdersContext"
+import { AccountProvider } from "@/context/AccountContext"
+import { WishlistProvider } from "@/context/WishlistContext"
+import { RecentlyViewedProvider } from "@/context/RecentlyViewedContext"
 import Toaster from "@/components/ui/Toaster"
 import CartDrawer from "@/components/cart/CartDrawer"
 import SearchOverlay from "@/components/search/SearchOverlay"
@@ -19,22 +22,28 @@ import SearchOverlay from "@/components/search/SearchOverlay"
 export default function Providers({ children }: { children: ReactNode }) {
   return (
     <AdminProvider>
-      <CatalogProvider>
-        <ReviewsProvider>
-          <OrdersProvider>
-            <ToastProvider>
-              <UIProvider>
-                <CartProvider>
-                  {children}
-                  <Toaster />
-                  <CartDrawer />
-                  <SearchOverlay />
-                </CartProvider>
-              </UIProvider>
-            </ToastProvider>
-          </OrdersProvider>
-        </ReviewsProvider>
-      </CatalogProvider>
+      <AccountProvider>
+        <CatalogProvider>
+          <ReviewsProvider>
+            <OrdersProvider>
+              <WishlistProvider>
+                <RecentlyViewedProvider>
+                  <ToastProvider>
+                    <UIProvider>
+                      <CartProvider>
+                        {children}
+                        <Toaster />
+                        <CartDrawer />
+                        <SearchOverlay />
+                      </CartProvider>
+                    </UIProvider>
+                  </ToastProvider>
+                </RecentlyViewedProvider>
+              </WishlistProvider>
+            </OrdersProvider>
+          </ReviewsProvider>
+        </CatalogProvider>
+      </AccountProvider>
     </AdminProvider>
   )
 }

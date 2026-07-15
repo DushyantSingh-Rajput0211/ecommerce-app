@@ -1,6 +1,7 @@
 import Link from "next/link"
 import Image from "next/image"
 import { formatPrice, getLowestPrice } from "@/lib/utils"
+import WishlistButton from "@/components/product/WishlistButton"
 
 export default function ProductCard({ product }: { product: any }) {
   const price = getLowestPrice(product)
@@ -33,6 +34,8 @@ export default function ProductCard({ product }: { product: any }) {
             {collection}
           </span>
         )}
+
+        <WishlistButton handle={product.handle} title={product.title} />
       </div>
 
       <p className="text-sm font-medium leading-snug transition-colors group-hover:text-accent">
