@@ -2,13 +2,17 @@
 
 import Link from "next/link"
 import { useParams } from "next/navigation"
+import { useEffect } from "react"
 import { useCatalog } from "@/context/CatalogContext"
 import { useReviews } from "@/context/ReviewsContext"
+import { useRecentlyViewed } from "@/context/RecentlyViewedContext"
 import { formatPrice } from "@/lib/utils"
 import AddToCartButton from "@/components/product/AddToCartButton"
 import ImageGallery from "@/components/product/ImageGallery"
 import RelatedProducts from "@/components/product/RelatedProducts"
+import RecentlyViewed from "@/components/product/RecentlyViewed"
 import Reviews from "@/components/product/Reviews"
+import WishlistButton from "@/components/product/WishlistButton"
 import Spinner from "@/components/ui/Spinner"
 import Breadcrumbs from "@/components/ui/Breadcrumbs"
 import { Stars } from "@/components/ui/Stars"
@@ -18,8 +22,13 @@ export default function ProductPage() {
   const handle = String(params.handle)
   const { getProductByHandle, parents, ready } = useCatalog()
   const { getSummary } = useReviews()
+  const { record } = useRecentlyViewed()
 
   const product = getProductByHandle(handle)
+
+  useEffect(() => {
+    if (product) record(handle)
+  }, [product, handle, record])
 
   // Before localStorage hydration an admin-created product may be unresolved,
   // so only treat it as missing once the catalog is ready.
@@ -102,12 +111,21 @@ export default function ProductPage() {
             )}
 
             <AddToCartButton product={product} />
+            <div className="mt-3">
+              <WishlistButton
+                handle={product.handle}
+                title={product.title}
+                variant="inline"
+              />
+            </div>
           </div>
         </div>
 
         {parent && (
           <RelatedProducts parentId={parent.id} excludeId={product.id} />
         )}
+
+        <RecentlyViewed excludeHandle={handle} />
 
         <div id="reviews" className="scroll-mt-24">
           <Reviews handle={handle} />
