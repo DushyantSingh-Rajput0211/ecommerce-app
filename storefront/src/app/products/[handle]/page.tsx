@@ -92,7 +92,10 @@ export default function ProductPage() {
     <div className="pt-16 min-h-screen">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        // Escape "<" so product text containing "</script>" can't break out.
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+        }}
       />
       <div className="max-w-7xl mx-auto px-6 py-16 pb-28 md:pb-16">
         <div className="mb-8">
