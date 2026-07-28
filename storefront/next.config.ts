@@ -33,6 +33,11 @@ const nextConfig: NextConfig = {
         hostname: "*.supabase.co",
         pathname: "/storage/v1/object/public/**",
       },
+      // Medusa demo images + S3-hosted product images
+      {
+        protocol: "https",
+        hostname: "**.amazonaws.com",
+      },
     ],
   },
   async headers() {

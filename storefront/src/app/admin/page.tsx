@@ -15,10 +15,19 @@ export default function AdminDashboard() {
     deleteParent,
     deleteProduct,
     resetCatalog,
+    remote,
   } = useCatalog()
 
   return (
     <div className="space-y-10">
+      {remote && (
+        <div className="glass rounded-lg p-4 text-sm text-muted border border-accent/30">
+          <span className="text-accent font-medium">Connected to Medusa.</span>{" "}
+          Products shown here come from your live backend. Manage products in the
+          Medusa admin dashboard (<code className="text-fg/80">/app</code> on your
+          backend) — edits made here only affect local demo data.
+        </div>
+      )}
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="font-display text-3xl font-semibold">Catalog</h1>
