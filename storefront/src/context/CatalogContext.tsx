@@ -18,11 +18,13 @@ import {
   loadCatalog,
   saveCatalog,
 } from "@/lib/catalog"
+import { loadMedusaCatalog } from "@/lib/medusaCatalog"
 
 interface CatalogContextType {
   parents: CatalogParent[]
   products: CatalogProduct[]
-  ready: boolean // true once localStorage has hydrated on the client
+  ready: boolean // true once the catalog (Medusa or local) has hydrated
+  remote: boolean // true when products are sourced from a live Medusa backend
   // reads
   getParentByHandle: (handle: string) => CatalogParent | undefined
   getProductByHandle: (handle: string) => CatalogProduct | undefined
@@ -42,10 +44,32 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
   // Initialize with the deterministic seed so SSR and first client render match.
   const [catalog, setCatalog] = useState<Catalog>(() => defaultCatalog())
   const [ready, setReady] = useState(false)
+  const [remote, setRemote] = useState(false)
 
+  // On mount, prefer a live Medusa backend; fall back to the local catalog
+  // (localStorage/seed) when Medusa isn't configured, reachable, or has no
+  // products. This keeps the deployed demo working until the backend is live.
   useEffect(() => {
-    setCatalog(loadCatalog())
-    setReady(true)
+    let cancelled = false
+    loadMedusaCatalog()
+      .then((medusa) => {
+        if (cancelled) return
+        if (medusa && medusa.products.length > 0) {
+          setCatalog(medusa)
+          setRemote(true)
+        } else {
+          setCatalog(loadCatalog())
+        }
+        setReady(true)
+      })
+      .catch(() => {
+        if (cancelled) return
+        setCatalog(loadCatalog())
+        setReady(true)
+      })
+    return () => {
+      cancelled = true
+    }
   }, [])
 
   const persist = useCallback((next: Catalog) => {
@@ -122,6 +146,7 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
         parents: catalog.parents,
         products: catalog.products,
         ready,
+        remote,
         getParentByHandle,
         getProductByHandle,
         getProductById,
