@@ -50,7 +50,7 @@ let orderCounter = 1000
 
 function makeOrderId() {
   orderCounter += 1
-  return `MS-${orderCounter}`
+  return `GS-${orderCounter}`
 }
 
 export function OrdersProvider({ children }: { children: ReactNode }) {

@@ -31,7 +31,7 @@ export default function ProductPage() {
   }, [product, handle, record])
 
   useEffect(() => {
-    if (product) document.title = `${product.title} · My Store`
+    if (product) document.title = `${product.title} · GaSmart`
   }, [product])
 
   // Before localStorage hydration an admin-created product may be unresolved,

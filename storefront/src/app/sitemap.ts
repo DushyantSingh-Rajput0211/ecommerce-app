@@ -3,7 +3,15 @@ import type { MetadataRoute } from "next"
 const BASE = process.env.NEXT_PUBLIC_SITE_URL || "https://my-store.vercel.app"
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const routes = ["", "/products", "/collections", "/cart"]
+  const routes = [
+    "",
+    "/products",
+    "/collections",
+    "/cart",
+    "/legal/privacy",
+    "/legal/terms",
+    "/legal/returns",
+  ]
   return routes.map((path) => ({
     url: `${BASE}${path}`,
     changeFrequency: "weekly",
