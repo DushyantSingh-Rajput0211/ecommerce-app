@@ -39,7 +39,7 @@ export default function Header() {
             href="/"
             className="text-xs font-medium tracking-[0.3em] uppercase"
           >
-            My Store
+            GaSmart
           </Link>
         </div>
 

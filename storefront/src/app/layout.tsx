@@ -18,26 +18,26 @@ const spaceGrotesk = Space_Grotesk({
   display: "swap",
 })
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://my-store.vercel.app"
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://gasmart.com"
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "My Store — Premium Goods",
-    template: "%s · My Store",
+    default: "GaSmart — Premium Goods",
+    template: "%s · GaSmart",
   },
   description: "Limited quantities. Shipped worldwide. Designed to stand out.",
-  keywords: ["shop", "store", "fashion", "electronics", "ecommerce"],
+  keywords: ["gasmart", "shop", "store", "fashion", "electronics", "ecommerce"],
   openGraph: {
     type: "website",
-    siteName: "My Store",
-    title: "My Store — Premium Goods",
+    siteName: "GaSmart",
+    title: "GaSmart — Premium Goods",
     description: "Limited quantities. Shipped worldwide. Designed to stand out.",
     url: siteUrl,
   },
   twitter: {
     card: "summary_large_image",
-    title: "My Store — Premium Goods",
+    title: "GaSmart — Premium Goods",
     description: "Limited quantities. Shipped worldwide.",
   },
 }
